@@ -17,16 +17,17 @@ I packaged it to be available to everyone via The Cheese Shop (pypi):
  http://pypi.python.org/pypi/python-bitcoinaddress
 
 
+If you use this module, support me with bitcoins! Any amount is appreciated.
+`1qYsJbtEWAeXMsbgxUgGsJsAp3VArsBRd`
+
 History
 -------
 ### 2012-12-14
 * I renamed the `check_bc` function to `validate` for ease of use.
 * Added check if the base58-re-encoded address matches the original address
   Relevant for short addresses with a valid check, but invalid format.
-  For example: 
-    14oLvT2
-  The valid version of that address is:
-    1111111111111111111114oLvT2
+  For example:  `14oLvT2`
+  The valid version of that address is: `1111111111111111111114oLvT2`
 * Added alternatives for `long.to_bytes` and `long.from_bytes` for Python 
   versions prior to 3.2
 * Added unit tests
