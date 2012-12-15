@@ -17,7 +17,7 @@ requires = ['']
 
 setup(
     name='python-bitcoinaddress',
-    version='0.2',
+    version='0.2.1',
     description="Python bitcoin address validation",
     long_description=read('README.md'),
     license="GPLv3",
