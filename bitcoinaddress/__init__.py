@@ -1,15 +1,9 @@
 """\
-Original author unknown.
-
 Copied from: 
 http://rosettacode.org/wiki/Bitcoin/address_validation#Python
-
-Additions:
-* I renamed the functions for ease of use.
-* Added an alternative to `long.to_bytes` for Python prior to 3.2
 """
 from hashlib import sha256
- 
+
 digits58 = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz'
 
 
@@ -17,8 +11,7 @@ def _bytes_to_long(bytestring, byteorder):
     """For use in python version prior to 3.2 """
     result = []
     if byteorder == 'little':
-        #result = (int(v) << i*8 for (i, v) in enumerate(bytestring))
-        result = int(bytestring.encode('hex'), 16)
+        result = (v << i*8 for (i, v) in enumerate(bytestring))
     else:
         result = (v << i*8 for (i, v) in enumerate(reversed(bytestring)))
     return sum(result)
@@ -86,8 +79,10 @@ def validate(bitcoin_address):
     # Encoded bytestring should be equal to the original address
     # For example '14oLvT2' has a valid checksum, but is not a valid btc address
     return bitcoin_address == encode_base58(bcbytes)
- 
+
+
 if __name__ == '__main__':
+    # Playing araound mess:
     n = 2491969579123783355964723219455906992268673266682165637887
     
     assert _long_to_bytes(n, 25, 'big') == b'\x00e\xa1`Y\x86J/\xdb\xc7\xc9\x9aG#\xa89[\xc6\xf1\x88\xeb\xc0F\xb2\xff'
