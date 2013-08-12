@@ -59,6 +59,9 @@ class TestInvalid(TestCase):
         valid = '1AGNa15ZQXAZUgFiqJ2i7Z2DPU2J6hW62i'
         self.addresses = [
             '',
+            ' 1C9wCniTU7PP7NLhFFHhMQfhmkqdY37zuP',  # leading space
+            '1C9wCniTU7PP7NLhFFHhMQfhmkqdY37zuP ',  # trailing space
+            '1C9wCniTU7PP7NLhFFHhMQfhmkqdY37zu?',  # unknown base58 character
             '12HzMcHURwmAxAkfWgtktYsF3vRTkBz4F4',
             valid.replace('N', 'P', 1),
         ]

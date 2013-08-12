@@ -7,6 +7,10 @@ from hashlib import sha256
 digits58 = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz'
 
 
+class IllegalCharacterError(ValueError):
+    """Error class for when a character is not part of base58 """
+    
+
 def _bytes_to_long(bytestring, byteorder):
     """For use in python version prior to 3.2 """
     result = []
@@ -34,7 +38,11 @@ def decode_base58(bitcoin_address, length):
     """
     n = 0
     for char in bitcoin_address:
-        n = n * 58 + digits58.index(char)
+        try:
+            n = n * 58 + digits58.index(char)
+        except:
+            msg = u"Character not part of Bitcoin's base58: '%s'"
+            raise IllegalCharacterError(msg % char)
     try:
         return n.to_bytes(length, 'big')
     except AttributeError:
@@ -71,7 +79,10 @@ def validate(bitcoin_address):
     >>> validate('')
     False
     """
-    bcbytes = decode_base58(bitcoin_address, 25)
+    try:
+        bcbytes = decode_base58(bitcoin_address, 25)
+    except IllegalCharacterError:
+        return False
     # Compare checksum
     checksum = sha256(sha256(bcbytes[:-4]).digest()).digest()[:4]
     if bcbytes[-4:] != checksum:

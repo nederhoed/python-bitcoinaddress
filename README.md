@@ -22,8 +22,13 @@ If you use this module, support me with bitcoins! Any amount is appreciated.
 
 History
 -------
+### 2013-08-12
+* Invalidate addresses with non-base58 characters
+  Leading or trailing spaces will invalidate your address. Strip them before
+  validating the address.
+
 ### 2012-12-14
-* I renamed the `check_bc` function to `validate` for ease of use.
+* Renamed the `check_bc` function to `validate` for ease of use.
 * Added check if the base58-re-encoded address matches the original address
   Relevant for short addresses with a valid check, but invalid format.
   For example:  `14oLvT2`
