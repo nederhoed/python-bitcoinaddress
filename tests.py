@@ -41,6 +41,7 @@ class TestInvalidLitecoin(TestCase):
     def setUp(self):
         self.addresses = [
             'LRNYxwQsHpm2A1VhawrJQti3nUkPN7vtq3',
+            'LRM8qA2YH5cdYDWhFMDLE7GHcW2YmXPT5m',
         ]
 
     def test_invalid(self):
