@@ -79,7 +79,9 @@ def validate(bitcoin_address):
     >>> validate('')
     False
     """
-    if not bitcoin_address.startswith('1'):
+    if not bitcoin_address:
+        return False
+    if bitcoin_address[0] not in ('1', '3'):
         return False
     try:
         bcbytes = decode_base58(bitcoin_address, 25)

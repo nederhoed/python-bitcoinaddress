@@ -60,6 +60,7 @@ class TestValid(TestCase):
             '1cYxzmWaSsjdrfTqzJ1zTXtR7k8je9qVv',
             '12HzMcHURwmAxAkfWgtktYsF3vRTkBz4F3',
             '1GHATvgY4apPiBqmGkqfM3vWCbqtGAwKQ9',
+            '3NukJ6fYZJ5Kk8bPjycAnruZkE5Q7UW7i8',
         ]
     
     def test_valid(self):
