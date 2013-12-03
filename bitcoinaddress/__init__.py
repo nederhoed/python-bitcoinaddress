@@ -80,6 +80,9 @@ def validate(bitcoin_address):
     >>> validate('')
     False
     """
+    clen = len(bitcoin_address)
+    if clen < 27 or clen > 35: # XXX or 34?
+        return False
     if not bitcoin_address.startswith(tuple(string.digits)):
         return False
     try:
