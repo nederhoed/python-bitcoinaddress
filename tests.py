@@ -36,6 +36,18 @@ class TestInvalidNotorious(TestCase):
             self.assertFalse(bitcoinaddress.validate(bitcoin_address))
 
 
+class TestInvalidLitecoin(TestCase):
+    """Valid litecoin addresses should not be considered valid for bitcoins """
+    def setUp(self):
+        self.addresses = [
+            'LRNYxwQsHpm2A1VhawrJQti3nUkPN7vtq3',
+        ]
+
+    def test_invalid(self):
+        for bitcoin_address in self.addresses:
+            self.assertFalse(bitcoinaddress.validate(bitcoin_address))
+
+
 class TestValid(TestCase):
     def setUp(self):
         self.addresses = [
@@ -69,3 +81,7 @@ class TestInvalid(TestCase):
     def test_invalid(self):
         for bitcoin_address in self.addresses:
             self.assertFalse(bitcoinaddress.validate(bitcoin_address))
+
+if __name__ == '__main__':
+    from unittest import main
+    main()
