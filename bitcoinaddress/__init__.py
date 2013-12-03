@@ -2,6 +2,7 @@
 Copied from: 
 http://rosettacode.org/wiki/Bitcoin/address_validation#Python
 """
+import string
 from hashlib import sha256
 
 digits58 = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz'
@@ -79,9 +80,7 @@ def validate(bitcoin_address):
     >>> validate('')
     False
     """
-    if not bitcoin_address:
-        return False
-    if bitcoin_address[0] not in ('1', '3'):
+    if not bitcoin_address.startswith(tuple(string.digits)):
         return False
     try:
         bcbytes = decode_base58(bitcoin_address, 25)
