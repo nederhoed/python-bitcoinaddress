@@ -99,7 +99,7 @@ def validate(bitcoin_address):
 
 
 if __name__ == '__main__':
-    # Playing araound mess:
+    # Playing around mess:
     n = 2491969579123783355964723219455906992268673266682165637887
     
     assert _long_to_bytes(n, 25, 'big') == b'\x00e\xa1`Y\x86J/\xdb\xc7\xc9\x9aG#\xa89[\xc6\xf1\x88\xeb\xc0F\xb2\xff'
