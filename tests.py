@@ -78,11 +78,18 @@ class TestInvalid(TestCase):
             '1C9wCniTU7PP7NLhFFHhMQfhmkqdY37zu?',  # unknown base58 character
             '12HzMcHURwmAxAkfWgtktYsF3vRTkBz4F4',
             valid.replace('N', 'P', 1),
+            'mpc1rKeaMSCuQnJevMViLuq8uWjHwgdjiV', # testnet invalid by default
         ]
     
     def test_invalid(self):
         for bitcoin_address in self.addresses:
             self.assertFalse(bitcoinaddress.validate(bitcoin_address))
+
+
+class TestValidTestnet(TestCase):
+    def test_valid(self):
+        self.assertTrue(bitcoinaddress.validate(
+            'mpc1rKeaMSCuQnJevMViLuq8uWjHwgdjiV', allow_testnet=True))
 
 if __name__ == '__main__':
     from unittest import main

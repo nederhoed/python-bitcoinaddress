@@ -71,7 +71,7 @@ def encode_base58(bytestring):
         (n, rest) = divmod(n, 58)
     return zeros * '1' + result[::-1]  # reverse string
  
-def validate(bitcoin_address):
+def validate(bitcoin_address, allow_testnet=False):
     """Check the integrity of the bitcoin address.
     
     Returns False if the address is invalid.
@@ -83,7 +83,10 @@ def validate(bitcoin_address):
     clen = len(bitcoin_address)
     if clen < 27 or clen > 35: # XXX or 34?
         return False
-    if not bitcoin_address.startswith(tuple(string.digits)):
+    allowed_first = tuple(string.digits)
+    if allow_testnet:
+        allowed_first += ('n', 'm')
+    if not bitcoin_address.startswith(allowed_first):
         return False
     try:
         bcbytes = decode_base58(bitcoin_address, 25)
