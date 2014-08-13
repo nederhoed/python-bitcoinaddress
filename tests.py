@@ -114,6 +114,11 @@ class TestValidMagicbytes(TestCase):
             bitcoinaddress.validate(
                 '3QJmV3qfvL9SuYo34YihAf3sRCW3qSinyC', magicbyte=5))
 
+    def test_valid_multiple_magicbytes(self):
+        self.assertTrue(
+            bitcoinaddress.validate(
+                'mpc1rKeaMSCuQnJevMViLuq8uWjHwgdjiV', magicbyte=(0, 111)))
+
 if __name__ == '__main__':
     from unittest import main
     main()
