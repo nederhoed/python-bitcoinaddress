@@ -10,10 +10,6 @@ from hashlib import sha256
 digits58 = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz'
 
 
-class IllegalCharacterError(ValueError):
-    """Error class for when a character is not part of base58
-    """
-
 def _bytes_to_long(bytestring, byteorder):
     """Convert a bytestring to a long
 
@@ -51,7 +47,7 @@ def decode_base58(bitcoin_address, length):
             n = n * 58 + digits58.index(char)
         except:
             msg = u"Character not part of Bitcoin's base58: '%s'"
-            raise IllegalCharacterError(msg % (char,))
+            raise ValueError(msg % (char,))
     try:
         return n.to_bytes(length, 'big')
     except AttributeError:
@@ -80,7 +76,7 @@ def encode_base58(bytestring):
         (n, rest) = divmod(n, 58)
     return zeros * '1' + result[::-1]  # reverse string
 
-def validate(bitcoin_address, allow_testnet=False):
+def validate(bitcoin_address, magicbyte=0):
     """Check the integrity of a bitcoin address
 
     Returns False if the address is invalid.
@@ -93,43 +89,18 @@ def validate(bitcoin_address, allow_testnet=False):
     if clen < 27 or clen > 35: # XXX or 34?
         return False
     allowed_first = tuple(string.digits)
-    if allow_testnet:
-        allowed_first += ('n', 'm')
-    if not bitcoin_address.startswith(allowed_first):
-        return False
     try:
         bcbytes = decode_base58(bitcoin_address, 25)
-    except IllegalCharacterError:
+    except ValueError:
+        return False
+    # Check magic byte (for other altcoins, fix by Frederico Reiven)
+    if not bcbytes.startswith(chr(int(magicbyte))):
         return False
     # Compare checksum
     checksum = sha256(sha256(bcbytes[:-4]).digest()).digest()[:4]
     if bcbytes[-4:] != checksum:
         return False
-    # Encoded bytestring should be equal to the original address
-    # For example '14oLvT2' has a valid checksum, but is not a valid btc
+    # Encoded bytestring should be equal to the original address,
+    # for example '14oLvT2' has a valid checksum, but is not a valid btc
     # address
     return bitcoin_address == encode_base58(bcbytes)
-
-if __name__ == '__main__':
-    # Playing around mess:
-    n = 2491969579123783355964723219455906992268673266682165637887
-
-    assert _long_to_bytes(n, 25, 'big') == (
-        b'\x00e\xa1`Y\x86J/\xdb\xc7\xc9\x9aG#\xa89[\xc6\xf1\x88\xeb\xc0F'
-        b'\xb2\xff')
-
-    bc = 'miwxGypTcHDXT3m4avmrMMC4co7XWqbG9r'  # invalid, but still passes!
-    bc = '14oLvT2'  # invalid
-    bc = '1AGNa15ZQXAZUgFiqJ2i7Z2DPU2J6hW62i'
-    bc = '1111111111111111111114oLvT2'
-    b = _long_to_bytes(n, 25, 'big')
-    print(list(b))
-    #print(n.to_bytes(25, 'big'))
-    print(n)
-    print(_bytes_to_long(b, 'big'))
-    print(encode_base58(decode_base58(bc, 25)))
-
-    assert validate(bc)
-    #assert not validate( bc.replace('N', 'P', 1) )
-    #assert validate('1111111111111111111114oLvT2')
-    #assert validate("17NdbrSGoUotzeGCcMMCqnFkEvLymoou9j")

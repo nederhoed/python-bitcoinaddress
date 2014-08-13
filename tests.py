@@ -9,26 +9,36 @@ import bitcoinaddress
 class TestLongToBytes(TestCase):
     def test_example(self):
         n = 2491969579123783355964723219455906992268673266682165637887
-        self.assertEqual(bitcoinaddress._long_to_bytes(n, 25, 'big'),
-                         b'\x00e\xa1`Y\x86J/\xdb\xc7\xc9\x9aG#\xa89[\xc6\xf1\x88\xeb\xc0F\xb2\xff')
+        self.assertEqual(
+            bitcoinaddress._long_to_bytes(n, 25, 'big'),
+            b'\x00e\xa1`Y\x86J/\xdb\xc7\xc9\x9aG#\xa89[\xc6\xf1\x88'
+            b'\xeb\xc0F\xb2\xff')
 
 
 class TestBytesToLong(TestCase):
     def test_example(self):
-        b = b'\x00e\xa1`Y\x86J/\xdb\xc7\xc9\x9aG#\xa89[\xc6\xf1\x88\xeb\xc0F\xb2\xff'
-        self.assertEqual(bitcoinaddress._bytes_to_long(bytearray(b), 'big'),
-                         2491969579123783355964723219455906992268673266682165637887)
+        b = (
+            b'\x00e\xa1`Y\x86J/\xdb\xc7\xc9\x9aG#\xa89[\xc6\xf1\x88\xeb'
+            b'\xc0F\xb2\xff')
+        self.assertEqual(
+            bitcoinaddress._bytes_to_long(bytearray(b), 'big'),
+            2491969579123783355964723219455906992268673266682165637887)
 
 
 class TestInvalidNotorious(TestCase):
     """Valid by hash calculation, not valid by format """
     def setUp(self):
         self.addresses = [
-            '14oLvT2',  # padding omitted
-            '111111111111111111114oLvT2',  # padding too short
-#            'miwxGypTcHDXT3m4avmrMMC4co7XWqbG9r',  # invalid first character
-            '31uEbMgunupShBVTewXjtqbBv5MndwfXhb',  # from https://en.bitcoin.it/wiki/Address but invalid!
-            '175tWpb8K1S7NmH4Zx6rewF9WQrcZv245W',  # from wikipedia article, but invalid
+            # padding omitted
+            '14oLvT2',
+            # padding too short
+            '111111111111111111114oLvT2',
+            # invalid first character
+            'miwxGypTcHDXT3m4avmrMMC4co7XWqbG9r',
+            # from https://en.bitcoin.it/wiki/Address but invalid!
+            '31uEbMgunupShBVTewXjtqbBv5MndwfXhb',
+            # from wikipedia article, but invalid
+            '175tWpb8K1S7NmH4Zx6rewF9WQrcZv245W',
         ]
     
     def test_invalid(self):
@@ -37,7 +47,8 @@ class TestInvalidNotorious(TestCase):
 
 
 class TestInvalidLitecoin(TestCase):
-    """Valid litecoin addresses should not be considered valid for bitcoins """
+    """Valid litecoin addresses should not be considered valid for bitcoins
+    """
     def setUp(self):
         self.addresses = [
             'LRNYxwQsHpm2A1VhawrJQti3nUkPN7vtq3',
@@ -60,7 +71,6 @@ class TestValid(TestCase):
             '1cYxzmWaSsjdrfTqzJ1zTXtR7k8je9qVv',
             '12HzMcHURwmAxAkfWgtktYsF3vRTkBz4F3',
             '1GHATvgY4apPiBqmGkqfM3vWCbqtGAwKQ9',
-            '3NukJ6fYZJ5Kk8bPjycAnruZkE5Q7UW7i8',
         ]
     
     def test_valid(self):
@@ -73,12 +83,16 @@ class TestInvalid(TestCase):
         valid = '1AGNa15ZQXAZUgFiqJ2i7Z2DPU2J6hW62i'
         self.addresses = [
             '',
-            ' 1C9wCniTU7PP7NLhFFHhMQfhmkqdY37zuP',  # leading space
-            '1C9wCniTU7PP7NLhFFHhMQfhmkqdY37zuP ',  # trailing space
-            '1C9wCniTU7PP7NLhFFHhMQfhmkqdY37zu?',  # unknown base58 character
+            # leading space
+            ' 1C9wCniTU7PP7NLhFFHhMQfhmkqdY37zuP',
+            # trailing space
+            '1C9wCniTU7PP7NLhFFHhMQfhmkqdY37zuP ',
+            # unknown base58 character
+            '1C9wCniTU7PP7NLhFFHhMQfhmkqdY37zu?',
             '12HzMcHURwmAxAkfWgtktYsF3vRTkBz4F4',
             valid.replace('N', 'P', 1),
-            'mpc1rKeaMSCuQnJevMViLuq8uWjHwgdjiV', # testnet invalid by default
+            # testnet invalid by default
+            'mpc1rKeaMSCuQnJevMViLuq8uWjHwgdjiV',
         ]
     
     def test_invalid(self):
@@ -88,8 +102,14 @@ class TestInvalid(TestCase):
 
 class TestValidTestnet(TestCase):
     def test_valid(self):
-        self.assertTrue(bitcoinaddress.validate(
-            'mpc1rKeaMSCuQnJevMViLuq8uWjHwgdjiV', allow_testnet=True))
+        # Bitcoin testnet
+        self.assertTrue(
+            bitcoinaddress.validate(
+                'mpc1rKeaMSCuQnJevMViLuq8uWjHwgdjiV', magicbyte=111))
+        # Bitcoin testnet multisig
+        self.assertTrue(
+            bitcoinaddress.validate(
+                '3QJmV3qfvL9SuYo34YihAf3sRCW3qSinyC', magicbyte=5))
 
 if __name__ == '__main__':
     from unittest import main
