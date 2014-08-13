@@ -100,13 +100,16 @@ class TestInvalid(TestCase):
             self.assertFalse(bitcoinaddress.validate(bitcoin_address))
 
 
-class TestValidTestnet(TestCase):
-    def test_valid(self):
-        # Bitcoin testnet
+class TestValidMagicbytes(TestCase):
+    def test_valid_testnet(self):
+        self.assertFalse(
+            bitcoinaddress.validate(
+                'mpc1rKeaMSCuQnJevMViLuq8uWjHwgdjiV'))
         self.assertTrue(
             bitcoinaddress.validate(
                 'mpc1rKeaMSCuQnJevMViLuq8uWjHwgdjiV', magicbyte=111))
-        # Bitcoin testnet multisig
+
+    def test_valid_multisig(self):
         self.assertTrue(
             bitcoinaddress.validate(
                 '3QJmV3qfvL9SuYo34YihAf3sRCW3qSinyC', magicbyte=5))
