@@ -3,7 +3,7 @@ General tests on general functions in python-sisow
 """
 from unittest import TestCase
 
-import bitcoinaddress
+from bitcoinaddress import validation as bitcoinaddress
 
 
 class TestLongToBytes(TestCase):
