@@ -75,17 +75,30 @@ def encode_base58(bytestring):
         (n, rest) = divmod(n, 58)
     return zeros * '1' + result[::-1]  # reverse string
 
-def validate(bitcoin_address, magicbyte=0):
+def validate(bitcoin_address, decimal_prefixes=(0, 5)):
     """Check the integrity of a bitcoin address
 
-    Returns False if the address is invalid.
+    Returns True if the address is valid, False if not.
+
     >>> validate('1AGNa15ZQXAZUgFiqJ2i7Z2DPU2J6hW62i')
     True
     >>> validate('')
     False
+
+    Arguments are the address (as a string) and the allowed decimal prefixes
+    (the decimal 'version byte' or 'magic byte' that forms the first character
+    of an address). The value of decimal_prefixes can be a single integer if
+    only a single prefix should match (e.g. 0 to allow only P2PKH Bitcoin
+    addresses), a tuple of integers for multiple prefixes (e.g.  (0, 5) for
+    Bitcoin P2PKH and P2SH addresses) or None to allow any prefix. Default is
+    (0, 5).
+
+    For a list of prefixes, see (e.g.):
+
+        https://github.com/libbitcoin/libbitcoin/wiki/Altcoin-Version-Mappings
     """
-    if isinstance(magicbyte, int):
-        magicbyte = (magicbyte,)
+    if isinstance(decimal_prefixes, int):
+        decimal_prefixes = (decimal_prefixes,)
     clen = len(bitcoin_address)
     if clen < 27 or clen > 35: # XXX or 34?
         return False
@@ -94,12 +107,16 @@ def validate(bitcoin_address, magicbyte=0):
         bcbytes = decode_base58(bitcoin_address, 25)
     except ValueError:
         return False
-    # Check magic byte (for other altcoins, fix by Frederico Reiven)
-    for mb in magicbyte:
-        if bcbytes.startswith(chr(int(mb))):
-            break
-    else:
-        return False
+    # Allow None (or empty tuple, False, etc.) as value for decimal_prefixes to
+    # skip version byte verification - suggestion by neonknight on GitHub
+    if decimal_prefixes:
+        # Check magic byte, by making this variable we support Bitcoin clones,
+        # too - fix by Frederico Reiven
+        for dp in decimal_prefixes:
+            if bcbytes.startswith(chr(int(dp))):
+                break
+        else:
+            return False
     # Compare checksum
     checksum = sha256(sha256(bcbytes[:-4]).digest()).digest()[:4]
     if bcbytes[-4:] != checksum:
